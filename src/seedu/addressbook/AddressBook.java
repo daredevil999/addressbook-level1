@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -127,6 +128,10 @@ public class AddressBook {
     private static final String COMMAND_EXIT_WORD = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
+    
+    private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_SORT_DESC = "Sorts all persons as a list in the address book.";
+    private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
 
     private static final String DIVIDER = "===================================================";
 
@@ -351,13 +356,15 @@ public class AddressBook {
             return executeClearAddressBook();
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
+        case COMMAND_SORT_WORD:
+            return executeSortAddressBook();
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
     }
-
+    
     /**
      * Splits raw user input into command word and command arguments string
      *
@@ -549,6 +556,22 @@ public class AddressBook {
         ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+    }
+    
+    /**
+     * Displays all persons in the address book to the user; in sorted order.
+     * Saves the address book in the sorted order, overriding the original order.
+     *
+     * @return feedback display message for the operation result
+     */
+    private static String executeSortAddressBook() {
+    	Collections.sort(ALL_PERSONS, new Comparator < String []> () {
+    		public int compare(String[] strings, String[] otherStrings) {
+    	        return strings[PERSON_DATA_INDEX_NAME].compareTo(otherStrings[PERSON_DATA_INDEX_NAME]);
+    	    }
+    	});
+    	savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+    	return executeListAllPersonsInAddressBook();
     }
 
     /**
