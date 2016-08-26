@@ -565,14 +565,22 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeSortAddressBook() {
-    	Collections.sort(ALL_PERSONS, new Comparator < String []> () {
+    	sortAddressBook();
+    	savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+    	return executeListAllPersonsInAddressBook();
+    }
+
+    /**
+     * Sorts all persons in the address book.
+     *
+     */
+	private static void sortAddressBook() {
+		Collections.sort(ALL_PERSONS, new Comparator < String []> () {
     		public int compare(String[] strings, String[] otherStrings) {
     	        return strings[PERSON_DATA_INDEX_NAME].compareTo(otherStrings[PERSON_DATA_INDEX_NAME]);
     	    }
     	});
-    	savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
-    	return executeListAllPersonsInAddressBook();
-    }
+	}
 
     /**
      * Request to terminate the program.
